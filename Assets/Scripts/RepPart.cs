@@ -11,7 +11,7 @@ using System.Globalization;
 /// RepPart说明：
 /// 此为.3drep文件的解析类。一个3drep文件中可能包含一个或几个零件实例，保存格式为顶点加面片加rgba材质的xml格式。
 /// 此类中的函数LoadFromFile的作用为加载一个3drep格式的文件并对其进行解析，解析结果保存在RepInstance实例类当中。
-/// 此类中的函数Render的作用为将解析好的零件绘图到unity场景中去。
+/// 此类中的函数Render的作用为将解析好的零件绘图到unity场景中去。注意：Render函数必须同步调用，不能在后台进程中调用。
 /// /// 作者：zy-zhao17@mails.tsinghua.edu.cn
 /// </summary>
 
@@ -20,7 +20,7 @@ class RepPart
 {
     public string name;
     public bool loadFinished;
-    public bool haveRendered;
+    //public bool haveRendered;
     public List<RepInstance> replist;
   
 
@@ -30,7 +30,7 @@ class RepPart
     {
 
         loadFinished = false;
-        haveRendered = false;
+        //haveRendered = false;
         replist = new List<RepInstance>();
     }
 
@@ -38,7 +38,7 @@ class RepPart
     {
 
         loadFinished = false;
-        haveRendered = false;
+        //haveRendered = false;
         replist = new List<RepInstance>();
         LoadFromFile(modelFilePath);
 
@@ -151,11 +151,10 @@ class RepPart
     public bool renderNewInstance(string transformString="")
     {
         if (!loadFinished) return false;
-        haveRendered = true;
+
 
         foreach(RepInstance inst in replist)
         {
-
             GameObject go = new GameObject(name);
             MeshFilter meshFilter = go.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = go.AddComponent<MeshRenderer>();
@@ -188,6 +187,7 @@ class RepPart
             }
 
             transf.localScale = new Vector3(-1, 1, 1);
+            transf.parent= GameObject.Find("ModelGenerator").transform;//////////////////////设置装配体的层次结构关系。
         }
 
         //Debug.Log("渲染完成！");
@@ -202,5 +202,40 @@ class RepPart
     {
         return Convert.ToSingle(s, CultureInfo.InvariantCulture);
     }
+
+}
+
+
+
+
+
+/// <summary>
+/// repInstance类说明：
+/// repInstance类只能由RepPart类生成和使用。
+/// 此为3drep文件的实例类，只能由RepPart类来生成。每个3drep文件中可能包含多个实例。每个实例是一个零件。零件模型由顶点数组、法线数组和三角面片下标来存储。这是图形学中非常通用的格式。
+/// 此类仅供存储顶点面片用，无数据处理功能。数据处理功能在RepPart类中实现。
+/// /// 作者：zy-zhao17@mails.tsinghua.edu.cn
+/// </summary>
+
+
+class RepInstance
+{
+    public List<Vector3> vertexArrayList; // 顶点数组，每个文件共用一组
+    public List<Vector3> normalArrayList; // 法线数组，每个文件共用一组
+    public List<int> triangleList;
+    public List<Vector4> colorList;
+    public List<int> triangleRange;
+    public Vector4 defaultColor;
+
+    public RepInstance()
+    {
+        vertexArrayList = new List<Vector3>(); // 顶点数组，每个文件共用一组
+        normalArrayList = new List<Vector3>(); // 法线数组，每个文件共用一组
+        triangleList = new List<int>();
+        colorList = new List<Vector4>();
+        triangleRange = new List<int>();//这个列表，存储顶点列表中的哪一段到哪一段用哪一种材质(目前材质仅区分rgba)。
+
+    }
+
 
 }

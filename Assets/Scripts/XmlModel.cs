@@ -22,15 +22,21 @@ using System.IO.Compression;
 class XmlModel
 {
     private XElement xd;
-    private Dictionary<string, RepPart> repDict;
-    public List<ModelInstance> modelsList;
+
+    const string xsi = "{http://www.w3.org/2001/XMLSchema-instance}";
+
+    //private Dictionary<string, RepPart> repDict;
+    //public List<ModelInstance> modelsList;
+    //public ModelInstance rootInstance;//rootInstance id==1.
+    public Dictionary<int, ModelInstance> InstanceDict;
     public bool loadFinished;
     public bool haveRendered;
 
     public XmlModel()
     {
-        repDict = new Dictionary<string, RepPart>();
-        modelsList = new List<ModelInstance>();
+        //repDict = new Dictionary<string, RepPart>();
+        //modelsList = new List<ModelInstance>();
+        InstanceDict = new Dictionary<int, ModelInstance>();
         loadFinished = false;
         haveRendered = false;
 
@@ -38,8 +44,9 @@ class XmlModel
 
     public XmlModel(string modelFilePath)
     {
-        repDict = new Dictionary<string, RepPart>();
-        modelsList = new List<ModelInstance>();
+        //repDict = new Dictionary<string, RepPart>();
+        //modelsList = new List<ModelInstance>();
+        InstanceDict = new Dictionary<int, ModelInstance>();
         loadFinished = false;
         haveRendered = false;
         LoadFromFile(modelFilePath);
@@ -75,36 +82,94 @@ class XmlModel
         IEnumerable<XElement> xels = xd.Elements().Last().Elements();
         foreach (XElement xel in xels)
         {
-            if (xel.Name.ToString().Split('}')[1].Equals("Instance3D"))
+            string nametype = xel.Attribute(xsi + "type").Value;
+
+            if (nametype.Equals("Reference3DType"))
             {
-                string repFilePath = "Assets\\3dxml\\" + xel.Attribute("name").Value + ".prt.3DRep";
-                if (File.Exists(repFilePath))
-                {
-                    string matrixString = xel.Elements().Last().Value;
-                    if (!repDict.ContainsKey(repFilePath))
-                    {
-                        repDict.Add(repFilePath, new RepPart(repFilePath));
-                    }
-                    modelsList.Add(new ModelInstance(repDict[repFilePath], matrixString));
-                }
+                //示例：<Reference3D xsi:type="Reference3DType" id="3" name="gf-3__21-90_pub_skel"/>
+
+                Reference3D r3 = new Reference3D(xel.Attribute("name").Value);
+
+                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), r3);
+
+
             }
+            else if (nametype.Equals("ReferenceRepType"))
+            {
+                //示例：<ReferenceRep xsi:type="ReferenceRepType" id="4" name="gf-3__21-90_pub_skel" format="TESSELLATED" version="1.2" associatedFile="urn:3DXML:gf-3__21-90_pub_skel.prt.3DRep">
+
+
+                string filepath = "Assets\\3dxml\\" + xel.Attribute("associatedFile").Value.Split(':')[2];
+
+                ReferenceRep rr = new ReferenceRep(xel.Attribute("name").Value, filepath);
+
+                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), rr);
+
+
+            }
+            else if (nametype.Equals("InstanceRepType"))
+            {
+                //<InstanceRep xsi:type="InstanceRepType" id="6" name="Part_InstanceRep">
+                //<IsAggregatedBy>3</IsAggregatedBy>
+                //<IsInstanceOf>4</IsInstanceOf>
+                //</InstanceRep>
+                int isAggregatedBy = ConvertToInt(xel.Elements().First().Value);
+                int IsInstanceOf = ConvertToInt(xel.Elements().Last().Value);
+
+                InstanceRep ir = new InstanceRep(xel.Attribute("name").Value);
+                ir.child = (ReferenceRep)InstanceDict[IsInstanceOf];
+                ir.parent = InstanceDict[isAggregatedBy];
+
+                ir.child.parent = ir;
+                ((Reference3D)ir.parent).childrenList.Add(ir);
+                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), ir);
+
+            }
+            else if (nametype.Equals("Instance3DType"))
+            {
+                //<Instance3D xsi:type="Instance3DType" id="17" name="GF-3__21-90_CABLE_PUB">
+                //<IsAggregatedBy>1</IsAggregatedBy>
+                //<IsInstanceOf>2</IsInstanceOf>
+                //<RelativeMatrix>1 0 0 0 1 0 0 0 1 0 0 0</RelativeMatrix>
+                //</Instance3D>
+
+
+                int isAggregatedBy = ConvertToInt(xel.Elements().First().Value);
+                int IsInstanceOf = ConvertToInt(xel.Elements().ToArray()[1].Value);
+                string RelativeMatrix = xel.Elements().Last().Value;
+
+                Instance3D i3 = new Instance3D(xel.Attribute("name").Value, RelativeMatrix);
+
+                i3.childrenList.Add(InstanceDict[IsInstanceOf]);
+
+                i3.parent = InstanceDict[isAggregatedBy];
+                
+                i3.parent.childrenList
+
+                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), mi);
+            }
+
+
+
         }
         loadFinished = true;
         return true;
     }
 
 
-    public bool Render()
+    public bool Render(int index=-1)
     {
-        
-        foreach(ModelInstance mi in modelsList)
-        {
-            mi.Render();
-        }
-        haveRendered = true;
-        return true;
+        return InstanceDict[1].Render();
+    }
 
 
+    private float ConvertToFloat(string s)
+    {
+        return Convert.ToSingle(s, CultureInfo.InvariantCulture);
+    }
+    private int ConvertToInt(string s)
+    {
+        return Convert.ToInt32(s, CultureInfo.InvariantCulture);
     }
 
 }
