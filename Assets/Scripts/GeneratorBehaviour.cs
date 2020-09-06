@@ -24,13 +24,14 @@ public class GeneratorBehaviour : MonoBehaviour
 
     GameObject thisobject;
 
-    private long starttime;
+    //private long starttime;
 
     public void bgWorker_DoWork(object sender, DoWorkEventArgs e)
     {
         Debug.Log("background worker started with name "+e.Argument);//将会打出调用这个后台进程时给出的参数，例如：helloworld
 
-        mainModel = new XmlModel("Assets\\3dxml\\gf-3-2-0_cable_pub.asm.3dxml");
+        //mainModel = new XmlModel("Assets\\3dxml\\gf-3-2-0_cable_pub.asm.3dxml");
+        mainModel = new XmlModel("Assets\\3dxml\\asm0007.asm.3dxml");
 
 
 
@@ -79,7 +80,7 @@ public class GeneratorBehaviour : MonoBehaviour
         Debug.Log("开启后台进程");
         bgWorker.RunWorkerAsync("helloworld");
 
-        starttime = -1;
+        //starttime = -1;
 
     }
 

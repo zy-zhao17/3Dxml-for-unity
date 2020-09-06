@@ -41,7 +41,10 @@ class ModelTree
         float[] matrixArray = Array.ConvertAll(transformString.Split(' '), s => float.Parse(s));
         new Vector3(matrixArray[9], matrixArray[10], matrixArray[11]);
         Quaternion newQ = Quaternion.LookRotation(new Vector3(-matrixArray[6], matrixArray[7], matrixArray[8]), new Vector3(-matrixArray[3], matrixArray[4], matrixArray[5]));
-        transf.SetPositionAndRotation(new Vector3(-matrixArray[9], matrixArray[10], matrixArray[11]), newQ);
+        //transf.SetPositionAndRotation(new Vector3(-matrixArray[9], matrixArray[10], matrixArray[11]), newQ);
+
+        transf.localPosition = new Vector3(-matrixArray[9], matrixArray[10], matrixArray[11]);
+        transf.localRotation = newQ;
 
 
         if (isLeaf)
