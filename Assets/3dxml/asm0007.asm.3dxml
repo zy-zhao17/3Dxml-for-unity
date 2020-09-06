@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Model_3dxml xmlns="http://www.3ds.com/xsd/3DXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/XLINK">
+	<Header>
+		<SchemaVersion>4.2</SchemaVersion>
+		<Title>asm0007.asm</Title>
+		<Author>Datakit CrossManager AllTo3dxml</Author>
+		<Generator>Datakit 3dxml Writer</Generator>
+	</Header>
+	<ProductStructure root="1">
+		<Reference3D xsi:type="Reference3DType" id="7" name="prt0001"/>
+		<Reference3D xsi:type="Reference3DType" id="6" name="asm0001"/>
+		<Reference3D xsi:type="Reference3DType" id="5" name="asm0002"/>
+		<Reference3D xsi:type="Reference3DType" id="14" name="asm0003"/>
+		<Reference3D xsi:type="Reference3DType" id="4" name="asm0004"/>
+		<Reference3D xsi:type="Reference3DType" id="3" name="asm0005"/>
+		<Reference3D xsi:type="Reference3DType" id="2" name="asm0006"/>
+		<Reference3D xsi:type="Reference3DType" id="1" name="asm0007"/>
+		<ReferenceRep xsi:type="ReferenceRepType" id="8" name="prt0001" format="TESSELLATED" version="1.2" associatedFile="urn:3DXML:prt0001.prt.3DRep">
+			<PLM_ExternalID>Part_8_ReferenceRep</PLM_ExternalID>
+			<V_discipline>Design</V_discipline>
+			<V_usage>3DShape</V_usage>
+			<V_nature>1</V_nature>
+		</ReferenceRep>
+		<InstanceRep xsi:type="InstanceRepType" id="9" name="Part_InstanceRep">
+			<IsAggregatedBy>7</IsAggregatedBy>
+			<IsInstanceOf>8</IsInstanceOf>
+		</InstanceRep>
+		<Instance3D xsi:type="Instance3DType" id="10" name="ASM0006">
+			<IsAggregatedBy>1</IsAggregatedBy>
+			<IsInstanceOf>2</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -673.275400 78.433989 359.094658</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="11" name="ASM0005">
+			<IsAggregatedBy>2</IsAggregatedBy>
+			<IsInstanceOf>3</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -184.709333 75.474258 30.522091</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="12" name="ASM0004">
+			<IsAggregatedBy>3</IsAggregatedBy>
+			<IsInstanceOf>4</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -82.727710 40.979911 4.626772</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="13" name="ASM0002">
+			<IsAggregatedBy>4</IsAggregatedBy>
+			<IsInstanceOf>5</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -19.583796 16.446103 -7.404610</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="15" name="ASM0001">
+			<IsAggregatedBy>5</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -15.972085 4.812333 4.799246</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="16" name="PRT0001">
+			<IsAggregatedBy>6</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -22.114403 12.953082 -1.281636</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="17" name="PRT0001">
+			<IsAggregatedBy>6</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -17.491527 3.706449 19.126294</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="18" name="ASM0001">
+			<IsAggregatedBy>5</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 24.619039 18.276359 14.989216</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="19" name="ASM0001">
+			<IsAggregatedBy>5</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -4.495459 50.096933 37.114673</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="20" name="ASM0003">
+			<IsAggregatedBy>4</IsAggregatedBy>
+			<IsInstanceOf>14</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -16.247791 83.421846 77.681092</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="21" name="ASM0001">
+			<IsAggregatedBy>14</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -17.424232 4.410013 6.293923</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="22" name="PRT0001">
+			<IsAggregatedBy>14</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -2.390589 26.037609 23.579637</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="23" name="ASM0003">
+			<IsAggregatedBy>4</IsAggregatedBy>
+			<IsInstanceOf>14</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 56.703099 97.089213 102.863385</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="24" name="PRT0001">
+			<IsAggregatedBy>4</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 12.063544 147.937411 156.967271</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="25" name="PRT0001">
+			<IsAggregatedBy>4</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -31.170811 80.246729 174.779466</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="26" name="ASM0004">
+			<IsAggregatedBy>3</IsAggregatedBy>
+			<IsInstanceOf>4</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 93.741389 168.339575 153.464577</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="27" name="ASM0003">
+			<IsAggregatedBy>3</IsAggregatedBy>
+			<IsInstanceOf>14</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 100.596342 350.386781 348.751906</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="28" name="ASM0003">
+			<IsAggregatedBy>3</IsAggregatedBy>
+			<IsInstanceOf>14</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 183.041042 372.798390 386.157608</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="29" name="ASM0005">
+			<IsAggregatedBy>2</IsAggregatedBy>
+			<IsInstanceOf>3</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -503.880636 364.487972 67.801480</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="30" name="ASM0002">
+			<IsAggregatedBy>2</IsAggregatedBy>
+			<IsInstanceOf>5</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -627.897552 813.698562 105.804704</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="31" name="ASM0001">
+			<IsAggregatedBy>2</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -753.014037 826.092486 -8.621758</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="32" name="ASM0001">
+			<IsAggregatedBy>2</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -773.675915 942.811556 224.938385</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="33" name="PRT0001">
+			<IsAggregatedBy>2</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -907.341735 903.811247 55.428151</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="34" name="ASM0006">
+			<IsAggregatedBy>1</IsAggregatedBy>
+			<IsInstanceOf>2</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -102.210938 681.541678 922.915512</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="35" name="ASM0001">
+			<IsAggregatedBy>1</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -216.309092 1671.536423 1465.216545</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="36" name="ASM0001">
+			<IsAggregatedBy>1</IsAggregatedBy>
+			<IsInstanceOf>6</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -110.986844 1688.829118 1513.295512</RelativeMatrix>
+		</Instance3D>
+		<Instance3D xsi:type="Instance3DType" id="37" name="PRT0001">
+			<IsAggregatedBy>1</IsAggregatedBy>
+			<IsInstanceOf>7</IsInstanceOf>
+			<RelativeMatrix>1 0 0 0 1 0 0 0 1 -392.867895 1867.222538 1550.085830</RelativeMatrix>
+		</Instance3D>
+	</ProductStructure>
+</Model_3dxml>
