@@ -22,21 +22,18 @@ using System.IO.Compression;
 class XmlModel
 {
     private XElement xd;
-
+    private int modelRoot;
     const string xsi = "{http://www.w3.org/2001/XMLSchema-instance}";
 
-    //private Dictionary<string, RepPart> repDict;
-    //public List<ModelInstance> modelsList;
-    //public ModelInstance rootInstance;//rootInstance id==1.
-    public Dictionary<int, ModelInstance> InstanceDict;
+    public Dictionary<int, ModelTree> TreeDict;
+    public Dictionary<int, RepPart> RepDict;
     public bool loadFinished;
     public bool haveRendered;
 
     public XmlModel()
     {
-        //repDict = new Dictionary<string, RepPart>();
-        //modelsList = new List<ModelInstance>();
-        InstanceDict = new Dictionary<int, ModelInstance>();
+        TreeDict = new Dictionary<int, ModelTree>();
+        RepDict = new Dictionary<int, RepPart>();
         loadFinished = false;
         haveRendered = false;
 
@@ -44,9 +41,8 @@ class XmlModel
 
     public XmlModel(string modelFilePath)
     {
-        //repDict = new Dictionary<string, RepPart>();
-        //modelsList = new List<ModelInstance>();
-        InstanceDict = new Dictionary<int, ModelInstance>();
+        TreeDict = new Dictionary<int, ModelTree>();
+        RepDict = new Dictionary<int, RepPart>();
         loadFinished = false;
         haveRendered = false;
         LoadFromFile(modelFilePath);
@@ -79,6 +75,8 @@ class XmlModel
         }
 
         XElement xd = XElement.Load(modelFilePath);
+
+        modelRoot = ConvertToInt(xd.Elements().Last().Attribute("root").Value);
         IEnumerable<XElement> xels = xd.Elements().Last().Elements();
         foreach (XElement xel in xels)
         {
@@ -88,9 +86,11 @@ class XmlModel
             {
                 //示例：<Reference3D xsi:type="Reference3DType" id="3" name="gf-3__21-90_pub_skel"/>
 
-                Reference3D r3 = new Reference3D(xel.Attribute("name").Value);
+                //Reference3D r3 = new Reference3D();
 
-                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), r3);
+                ModelTree mt = new ModelTree(xel.Attribute("name").Value);
+
+                TreeDict.Add(ConvertToInt(xel.Attribute("id").Value), mt);
 
 
             }
@@ -101,10 +101,7 @@ class XmlModel
 
                 string filepath = "Assets\\3dxml\\" + xel.Attribute("associatedFile").Value.Split(':')[2];
 
-                ReferenceRep rr = new ReferenceRep(xel.Attribute("name").Value, filepath);
-
-                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), rr);
-
+                RepDict.Add(ConvertToInt(xel.Attribute("id").Value), new RepPart(filepath, xel.Attribute("name").Value));
 
             }
             else if (nametype.Equals("InstanceRepType"))
@@ -114,15 +111,12 @@ class XmlModel
                 //<IsInstanceOf>4</IsInstanceOf>
                 //</InstanceRep>
                 int isAggregatedBy = ConvertToInt(xel.Elements().First().Value);
-                int IsInstanceOf = ConvertToInt(xel.Elements().Last().Value);
+                int isInstanceOf = ConvertToInt(xel.Elements().Last().Value);
 
-                InstanceRep ir = new InstanceRep(xel.Attribute("name").Value);
-                ir.child = (ReferenceRep)InstanceDict[IsInstanceOf];
-                ir.parent = InstanceDict[isAggregatedBy];
 
-                ir.child.parent = ir;
-                ((Reference3D)ir.parent).childrenList.Add(ir);
-                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), ir);
+                TreeDict[isAggregatedBy].isLeaf = true;
+                TreeDict[isAggregatedBy].LeafPrt.Add(RepDict[isInstanceOf]);
+
 
             }
             else if (nametype.Equals("Instance3DType"))
@@ -138,18 +132,10 @@ class XmlModel
                 int IsInstanceOf = ConvertToInt(xel.Elements().ToArray()[1].Value);
                 string RelativeMatrix = xel.Elements().Last().Value;
 
-                Instance3D i3 = new Instance3D(xel.Attribute("name").Value, RelativeMatrix);
+                TreeDict[isAggregatedBy].childList.Add(TreeDict[IsInstanceOf]);
+                TreeDict[isAggregatedBy].childTransferMatrixList.Add(RelativeMatrix);
 
-                i3.childrenList.Add(InstanceDict[IsInstanceOf]);
-
-                i3.parent = InstanceDict[isAggregatedBy];
-                
-                i3.parent.childrenList
-
-                InstanceDict.Add(ConvertToInt(xel.Attribute("id").Value), mi);
             }
-
-
 
         }
         loadFinished = true;
@@ -157,9 +143,10 @@ class XmlModel
     }
 
 
-    public bool Render(int index=-1)
+    public bool Render(GameObject fathergo)
     {
-        return InstanceDict[1].Render();
+        haveRendered=TreeDict[modelRoot].RenderNew(fathergo,"1 0 0 0 1 0 0 0 1 0 0 0");
+        return haveRendered;
     }
 
 

@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Threading;
+
+
 
 /// <summary>
 /// GeneratorBehaviour类说明：
@@ -20,6 +22,9 @@ public class GeneratorBehaviour : MonoBehaviour
 
     XmlModel mainModel = null;
 
+    GameObject thisobject;
+
+    private long starttime;
 
     public void bgWorker_DoWork(object sender, DoWorkEventArgs e)
     {
@@ -65,7 +70,6 @@ public class GeneratorBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         bgWorker = new BackgroundWorker();
         bgWorker.WorkerReportsProgress = true;
         bgWorker.WorkerSupportsCancellation = true;
@@ -75,16 +79,17 @@ public class GeneratorBehaviour : MonoBehaviour
         Debug.Log("开启后台进程");
         bgWorker.RunWorkerAsync("helloworld");
 
+        starttime = -1;
+
     }
 
 
     // Update is called once per frame
     void Update()
     {
-
         if ((mainModel != null) && mainModel.loadFinished && (!mainModel.haveRendered))
         {
-            mainModel.Render();
+            mainModel.Render(gameObject);
         }
 
     }

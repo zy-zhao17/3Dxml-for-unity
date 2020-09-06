@@ -34,13 +34,17 @@ class RepPart
         replist = new List<RepInstance>();
     }
 
-    public RepPart(string modelFilePath)
+    public RepPart(string modelFilePath,string nam="")
     {
 
         loadFinished = false;
         //haveRendered = false;
         replist = new List<RepInstance>();
         LoadFromFile(modelFilePath);
+        if (nam.Count() > 0)
+        {
+            name = nam;
+        }
 
         //Debug.Log("new Loaded RepPart!");
     }
@@ -61,15 +65,17 @@ class RepPart
         ran.NextDouble();
         ran.NextDouble();
         ran.NextDouble();
-        float allcolor = (float)ran.NextDouble() + 2;
-        float rProprety = (float)ran.NextDouble();
-        float gProprety = (float)ran.NextDouble();
-        float bProprety = (float)ran.NextDouble();
-        float allSum = rProprety + gProprety + bProprety;
-        rProprety = rProprety / allSum;
-        gProprety = gProprety / allSum;
-        bProprety = bProprety / allSum;
-        Vector4 defaultColor = new Vector4(allcolor * rProprety, allcolor * gProprety, allcolor * bProprety, 1);
+
+
+
+        float H = (float)ran.NextDouble();
+        float S = 0.5f + 0.5f * (float)ran.NextDouble();
+        float V = 0.5f + 0.5f * (float)ran.NextDouble();
+        Color c= Color.HSVToRGB(H,S,V);
+
+
+
+        Vector4 defaultColor = new Vector4(c.r, c.g, c.b, 1);
 
         name = modelFilePath.Split(new char[] { '/', '\\' }).Last().Split('.').First();
 
@@ -148,7 +154,7 @@ class RepPart
 
 
 
-    public bool renderNewInstance(string transformString="")
+    public bool renderNewInstance(GameObject fatherGo)
     {
         if (!loadFinished) return false;
 
@@ -177,17 +183,11 @@ class RepPart
             }
 
             Transform transf = go.GetComponent<Transform>();
-
-            if (transformString.Length > 0)
-            {
-                float[] matrixArray = Array.ConvertAll(transformString.Split(' '), s => float.Parse(s));
-                new Vector3(matrixArray[9], matrixArray[10], matrixArray[11]);
-                Quaternion newQ = Quaternion.LookRotation(new Vector3(-matrixArray[6], matrixArray[7], matrixArray[8]), new Vector3(-matrixArray[3], matrixArray[4], matrixArray[5]));
-                transf.SetPositionAndRotation(new Vector3(-matrixArray[9], matrixArray[10], matrixArray[11]), newQ);
-            }
-
+            transf.parent= fatherGo.transform;//////////////////////设置装配体的层次结构关系。
             transf.localScale = new Vector3(-1, 1, 1);
-            transf.parent= GameObject.Find("ModelGenerator").transform;//////////////////////设置装配体的层次结构关系。
+            transf.localPosition = new Vector3(0, 0, 0);
+            transf.localRotation = new Quaternion(0, 0, 0, 0);
+
         }
 
         //Debug.Log("渲染完成！");
@@ -202,6 +202,7 @@ class RepPart
     {
         return Convert.ToSingle(s, CultureInfo.InvariantCulture);
     }
+
 
 }
 
