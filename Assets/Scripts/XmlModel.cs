@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.IO;
-using UnityEngine;
 using System.Globalization;
 using System.IO.Compression;
+
+using UnityEngine;
 
 /// <summary>
 /// XmlModel类说明：
@@ -63,18 +62,46 @@ class XmlModel
         if ((header[0]==80) &&(header[1]==75))
         {
             //说明这是一个未解压缩的3dxml文件，需要将其解压缩。
-            FileInfo fi = new FileInfo(modelFilePath);
-            fi.MoveTo(modelFilePath+".zip");
             try
             {
-                ZipFile.ExtractToDirectory(modelFilePath + ".zip", "Assets\\3dxml\\");
+                try
+                {
+                    Directory.Delete("Assets\\cached\\",true);
+                }
+                catch (IOException) { }
+                Directory.CreateDirectory("Assets\\cached\\");
+                ZipFile.ExtractToDirectory(modelFilePath, "Assets\\cached\\");
             }
             catch (IOException) { }
-            fi = new FileInfo(modelFilePath + ".zip");
-            fi.Delete();
+
+        }
+        else
+        {
+            Debug.Log("请不要手动解包3DXML！");
+            return false;
         }
 
-        XElement xd = XElement.Load(modelFilePath);
+
+        string xmlname = "";
+        DirectoryInfo dir = new DirectoryInfo("Assets\\cached\\");
+        FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
+        foreach (FileSystemInfo i in fileinfo)
+        {
+            if (i is DirectoryInfo)            //判断是否文件夹
+            {
+
+            }
+            else
+            {
+                if (i.FullName.ToUpper().EndsWith(".3DXML"))
+                {
+                    xmlname = i.FullName;
+                }
+            }
+        }
+
+
+        XElement xd = XElement.Load(xmlname);
 
         modelRoot = ConvertToInt(xd.Elements().Last().Attribute("root").Value);
         IEnumerable<XElement> xels = xd.Elements().Last().Elements();
@@ -99,7 +126,7 @@ class XmlModel
                 //示例：<ReferenceRep xsi:type="ReferenceRepType" id="4" name="gf-3__21-90_pub_skel" format="TESSELLATED" version="1.2" associatedFile="urn:3DXML:gf-3__21-90_pub_skel.prt.3DRep">
 
 
-                string filepath = "Assets\\3dxml\\" + xel.Attribute("associatedFile").Value.Split(':')[2];
+                string filepath = "Assets\\cached\\" + xel.Attribute("associatedFile").Value.Split(':')[2];
 
                 RepDict.Add(ConvertToInt(xel.Attribute("id").Value), new RepPart(filepath, xel.Attribute("name").Value));
 
@@ -160,6 +187,4 @@ class XmlModel
     }
 
 }
-
-
 

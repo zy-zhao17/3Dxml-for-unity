@@ -22,7 +22,9 @@ class RepPart
     public bool loadFinished;
     //public bool haveRendered;
     public List<RepInstance> replist;
-  
+
+    static System.Random ran = new System.Random();
+
 
 
     //类的初始化，构造函数
@@ -59,9 +61,9 @@ class RepPart
         }
 
         byte[] bStringValue = Encoding.UTF8.GetBytes(modelFilePath);
-        int seed = int.Parse(DateTime.Now.ToString("ffffff"));
-        foreach(byte b in bStringValue) seed += b;
-        System.Random ran = new System.Random(seed);
+        //int seed = int.Parse(DateTime.Now.ToString("ffffff"));
+        //foreach(byte b in bStringValue) seed += b;
+        
         ran.NextDouble();
         ran.NextDouble();
         ran.NextDouble();
@@ -69,8 +71,8 @@ class RepPart
 
 
         float H = (float)ran.NextDouble();
-        float S = 0.5f + 0.5f * (float)ran.NextDouble();
-        float V = 0.5f + 0.5f * (float)ran.NextDouble();
+        float S = 0.5f * (float)ran.NextDouble();
+        float V = 0.7f + 0.3f * (float)ran.NextDouble();
         Color c= Color.HSVToRGB(H,S,V);
 
 
@@ -177,9 +179,20 @@ class RepPart
 
                 int[] faceIndexList = inst.triangleList.GetRange(startpos, sublen).ToArray();
 
-
                 meshFilter.mesh.SetTriangles(faceIndexList, i);
-                meshRenderer.materials[i].color = new Color(inst.colorList[i].x, inst.colorList[i].y, inst.colorList[i].z, inst.colorList[i].w);
+
+                Material mt = meshRenderer.materials[i];/////////////////此处为什么不会报null空指针错，就很奇怪，但是它确实没有报null。
+                mt.SetOverrideTag("RenderType", "Transparent"); //fade mode
+                mt.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                mt.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                mt.SetInt("_ZWrite", 1);
+                mt.DisableKeyword("_ALPHATEST_ON");
+                mt.EnableKeyword("_ALPHABLEND_ON");
+                mt.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                mt.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+                mt.color = new Color(inst.colorList[i].x, inst.colorList[i].y, inst.colorList[i].z, inst.colorList[i].w);
+
+
             }
 
             Transform transf = go.GetComponent<Transform>();
@@ -190,7 +203,6 @@ class RepPart
 
         }
 
-        //Debug.Log("渲染完成！");
         return true;
 
 
