@@ -166,11 +166,16 @@ class RepPart
             GameObject go = new GameObject(name);
             MeshFilter meshFilter = go.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = go.AddComponent<MeshRenderer>();
+            MeshCollider meshCollider = go.AddComponent<MeshCollider>();
+
+
             int len = inst.colorList.Count;
             meshFilter.mesh.vertices = inst.vertexArrayList.ToArray();
             meshFilter.mesh.normals = inst.normalArrayList.ToArray();
             meshFilter.mesh.subMeshCount = len;
             meshRenderer.materials = new Material[len];
+
+            meshCollider.sharedMesh = meshFilter.mesh;
 
             for (int i = 0; i < len; i++)
             {
@@ -178,7 +183,6 @@ class RepPart
                 int sublen = inst.triangleRange[i + 1] - startpos;
 
                 int[] faceIndexList = inst.triangleList.GetRange(startpos, sublen).ToArray();
-
                 meshFilter.mesh.SetTriangles(faceIndexList, i);
 
                 Material mt = meshRenderer.materials[i];/////////////////此处为什么不会报null空指针错，就很奇怪，但是它确实没有报null。

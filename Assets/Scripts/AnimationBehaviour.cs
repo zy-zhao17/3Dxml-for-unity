@@ -21,7 +21,7 @@ public class AnimationBehaviour : MonoBehaviour
         Transform transf = go.GetComponent<Transform>();
         //transf.localPosition = transf.localPosition + new Vector3(1, 1, 1);
 
-        settree(go);
+        //settree(go);
 
         //Debug.Log(transf.localPosition);
 
@@ -59,7 +59,7 @@ public class AnimationBehaviour : MonoBehaviour
                 {
                     Material mt = goo.GetComponent<MeshRenderer>().materials[i];
                     Color color = mt.color;
-                    color.a = color.a * 0.99f;
+                    if (color.a > 0.5) color.a = color.a * 0.99f;
                     mt.color = color;
                 }
 
