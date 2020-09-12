@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO.Compression;
 
 using UnityEngine;
+using System.Text;
 
 /// <summary>
 /// XmlModel类说明：
@@ -66,11 +67,11 @@ class XmlModel
             {
                 try
                 {
-                    Directory.Delete("Assets\\cached\\",true);
+                    Directory.Delete("cached\\",true);
                 }
                 catch (IOException) { }
-                Directory.CreateDirectory("Assets\\cached\\");
-                ZipFile.ExtractToDirectory(modelFilePath, "Assets\\cached\\");
+                Directory.CreateDirectory("cached\\");
+                ZipFile.ExtractToDirectory(modelFilePath, "cached\\");
             }
             catch (IOException) { }
 
@@ -83,7 +84,7 @@ class XmlModel
 
 
         string xmlname = "";
-        DirectoryInfo dir = new DirectoryInfo("Assets\\cached\\");
+        DirectoryInfo dir = new DirectoryInfo("cached\\");
         FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
         foreach (FileSystemInfo i in fileinfo)
         {
@@ -126,7 +127,7 @@ class XmlModel
                 //示例：<ReferenceRep xsi:type="ReferenceRepType" id="4" name="gf-3__21-90_pub_skel" format="TESSELLATED" version="1.2" associatedFile="urn:3DXML:gf-3__21-90_pub_skel.prt.3DRep">
 
 
-                string filepath = "Assets\\cached\\" + xel.Attribute("associatedFile").Value.Split(':')[2];
+                string filepath = "cached\\" + xel.Attribute("associatedFile").Value.Split(':')[2];
 
                 RepDict.Add(ConvertToInt(xel.Attribute("id").Value), new RepPart(filepath, xel.Attribute("name").Value));
 
@@ -172,7 +173,44 @@ class XmlModel
 
     public bool Render(GameObject fathergo)
     {
-        haveRendered=TreeDict[modelRoot].RenderNew(fathergo,"1 0 0 0 1 0 0 0 1 0 0 0");
+
+        Debug.Log("render XMLmodel!");
+        List<string> strlis = new List<string>();
+        strlis.Add("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+        strlis.Add("<!--动画模板说明：每一个asm列出了此局部装配体对应的所有的低一级子零件或子装配体（注意仅低一级，低多级的不考虑，而在子装配体中重新考虑）--> ");
+        strlis.Add("<!--translateFrom描述零件的平移。使用相对坐标，零件正确位置为0 0 0，如需要平移动画，请将0 0 0改为零件平移前的初始坐标。 --> ");
+        strlis.Add("<!--alphaFromTo描述了零件的不透明度渐变，默认从0变到1，即全透明变为全不透明 --> ");
+        strlis.Add("<!--durationFrames等于30表示所描述的动画在30帧内完成。 --> ");
+        strlis.Add("<!--可以在extraInstruction中填入装配此步骤所需显示的其他额外装配信息，以#开头代表不显示额外信息。 --> ");
+        strlis.Add("<root>");
+
+        foreach(KeyValuePair<int,ModelTree> kvp in TreeDict)
+        {
+            if (kvp.Value.childList.Count > 0)
+            {
+                strlis.Add("\t<asm name=\"" + kvp.Value.name + "\">");
+                foreach (ModelTree m in kvp.Value.childList)
+                {
+                    strlis.Add("\t\t<child name=\"" + m.name + "\">");
+                    strlis.Add("\t\t\t<translateFrom>0 0 0</translateFrom>");
+                    strlis.Add("\t\t\t<alphaFromTo>0 1</alphaFromTo>");
+                    strlis.Add("\t\t\t<durationFrames>30</durationFrames>");
+                    strlis.Add("\t\t\t<extraInstruction>###input your extra instruction here.###</extraInstruction>");
+                    strlis.Add("\t\t</child>");
+                }
+                strlis.Add("\t</asm>");
+            }
+        }
+
+        strlis.Add("</root>");
+
+        File.WriteAllLines("XmlAnimation\\Animation.xml", strlis, Encoding.UTF8);
+        haveRendered =TreeDict[modelRoot].RenderNew(fathergo,"1 0 0 0 1 0 0 0 1 0 0 0");
+
+        System.Diagnostics.Process p = new System.Diagnostics.Process();
+        p.StartInfo.FileName = "explorer.exe";
+        p.StartInfo.Arguments = " /select, XmlAnimation\\Animation.xml";
+        p.Start();
         return haveRendered;
     }
 
@@ -185,6 +223,7 @@ class XmlModel
     {
         return Convert.ToInt32(s, CultureInfo.InvariantCulture);
     }
+
 
 }
 

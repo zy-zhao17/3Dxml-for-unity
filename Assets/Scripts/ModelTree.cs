@@ -10,11 +10,9 @@ using System.Threading;
 
 class ModelTree
 {
-    string name;
-
+    public string name;
     public bool isLeaf;
     public List<RepPart> LeafPrt;
-
     public List<ModelTree> childList;
     public List<string> childTransferMatrixList;
 

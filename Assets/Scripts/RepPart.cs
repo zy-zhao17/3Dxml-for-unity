@@ -167,7 +167,7 @@ class RepPart
             MeshFilter meshFilter = go.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = go.AddComponent<MeshRenderer>();
             MeshCollider meshCollider = go.AddComponent<MeshCollider>();
-
+            go.AddComponent<ModelBehaviour>();////////////////////////////////////////给叶子节点动态添加行为脚本。
 
             int len = inst.colorList.Count;
             meshFilter.mesh.vertices = inst.vertexArrayList.ToArray();

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class CustomMenuBehaviour : MonoBehaviour
 
 
 
-    [MenuItem("AR装配/导入模型")]
+    [MenuItem("AR装配/导入模型并生成XML默认模板")]
     public static void CustomSubMenu1()
     {
         OpenFileDlg pth = new OpenFileDlg();
@@ -27,23 +28,62 @@ public class CustomMenuBehaviour : MonoBehaviour
         pth.title = "导入模型";
         pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000008;
 
-        if (OpenFileDialog.GetOpenFileName(pth))
-        {
-            string filepath = pth.file;//选择的文件路径;  
-            //Debug.Log(filepath);
-            XmlModel x = new XmlModel(filepath);
-            GameObject go = GameObject.Find("ModelGenerator");
-            if (go == null) go = new GameObject("ModelGenerator");
-            x.Render(go);
-        }
+        if (!OpenFileDialog.GetOpenFileName(pth)) return;
+        
+        string filepath = pth.file;//选择的文件路径;  
+                                   //Debug.Log(filepath);
+        XmlModel x = new XmlModel(filepath);
+        DestroyImmediate(GameObject.Find("ModelGenerator"));
+        x.Render(new GameObject("ModelGenerator"));
+
+
+
+        //打出一行字：模板生成在。。。.xml，请手动设置动画参数，或使用第二个选项自动设置参数。
+
+
+
+
+
+
+    }
+
+    [MenuItem("AR装配/自动填入XML动画参数（未实现）")]
+    public static void CustomSubMenu2()
+    {
+
+    }
+
+    [MenuItem("AR装配/载入已编辑好的XML动画指令序列")]
+    public static void CustomSubMenu3()
+    {
+        OpenFileDlg pth = new OpenFileDlg();
+        pth.structSize = System.Runtime.InteropServices.Marshal.SizeOf(pth);
+        pth.filter = "动画模板文件(*.XML)\0*.XML";
+
+        pth.file = new string(new char[256]);
+        pth.maxFile = pth.file.Length;
+        pth.fileTitle = new string(new char[64]);
+        pth.maxFileTitle = pth.fileTitle.Length;
+        pth.initialDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);  // default path  
+        pth.title = "载入模板";
+        pth.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000008;
+
+        if (!OpenFileDialog.GetOpenFileName(pth)) return;
+
+        string filepath = pth.file;//选择的文件路径;  
+
+
+        string[] strlis = File.ReadAllLines(filepath, Encoding.UTF8);
+        File.WriteAllLines("XmlAnimation\\Animation.xml", strlis, Encoding.UTF8);
+        Debug.Log("成功载入动画指令序列！");
     }
 
     [MenuItem("AR装配/清空模型")]
-    public static void CustomSubMenu2()
+    public static void CustomSubMenu4()
     {
         try
         {
-            Directory.Delete("Assets\\cached\\", true);
+            Directory.Delete("cached\\", true);
         }
         catch (IOException) { }
 
